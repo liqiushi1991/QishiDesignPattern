@@ -1,0 +1,49 @@
+#include <unordered_map>
+#include <sstream>
+#include <iterator>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+struct Sentence
+{
+
+  struct WordToken
+  {
+    bool capitalize;
+  };
+    vector<string> words;
+    unordered_map<int, WordToken> m;
+  Sentence(const string& text)
+  {
+    // todo
+    istringstream iss(text);
+    words = vector<string>(istream_iterator<string>(iss), istream_iterator<string>());
+  }
+
+  WordToken& operator[](size_t index)
+  {
+    // todo
+    if (m.find(index) == m.end())
+        m[index] = WordToken();
+    return m[index];
+  }
+
+  string str() const
+  {
+    // todo
+    string s;
+    for (size_t i = 0; i < words.size(); ++i)
+    {
+        string word = words[i];
+        auto w = m.find(i);
+        if (w != m.end() && w->second.capitalize)
+            transform(word.begin(), word.end(), word.begin(), (int (&)(int)) toupper);
+        s += word;
+        if (i < words.size() - 1)
+            s += " ";
+    }
+    return s;
+  }
+};
