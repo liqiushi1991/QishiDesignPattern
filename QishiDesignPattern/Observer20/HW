@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct IRat
+{
+    virtual void enter(IRat* sender) = 0;
+    virtual void leave(IRat* sender) = 0;
+    virtual void notify(IRat* sender) = 0;
+};
+
+
+struct Game
+{
+    // todo
+    vector<IRat*> rats;
+    
+    void enter(IRat* r)
+    {
+        for(auto i: rats)
+        {
+            i->enter(r);
+        }
+    }
+    
+    void leave(IRat* r)
+    {
+        for(auto i: rats)
+        {
+            i->leave(r);
+        }
+    }
+    
+    void notify(IRat* r)
+    {
+        for(auto i : rats)
+        {
+            i->notify(r);
+        }
+    }
+};
+
+struct Rat : IRat
+{
+    Game& game;
+    int attack{1};
+    
+    Rat(Game &game) : game(game)
+    {
+        // todo, obviously
+        game.rats.emplace_back(this);
+        game.enter(this);
+    }
+    
+    ~Rat()
+    {
+        // rat dies here!
+        game.leave(this);
+        game.rats.erase(std::remove(game.rats.begin(),game.rats.end(),this));
+    }
+    
+    void enter(IRat* sender) override
+    {
+        if(sender!=this)
+        {
+            attack++;
+            game.notify(sender);
+        }
+    }
+    
+    void leave(IRat* sender) override
+    {
+        attack--;
+    }
+    
+    void notify(IRat* sender) override
+    {
+        if(sender==this) attack++;
+    }
+};
