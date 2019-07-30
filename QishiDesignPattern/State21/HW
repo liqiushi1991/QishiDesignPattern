@@ -1,0 +1,31 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class CombinationLock
+{
+    vector<int> combination;
+public:
+    string status;
+    int index{0};
+    bool correct{true};
+    CombinationLock(const vector<int> &combination) : combination(combination) {
+      status = "LOCKED";
+      index = 0;
+      correct = true;
+      
+    }
+
+    void enter_digit(int digit)
+    {
+      // TODO
+      if (status == "LOCKED") status = "";
+      status +=  to_string(digit);
+      if (combination[index] != digit) correct = false;
+      index ++;
+
+      if (index == combination.size())
+        status = correct ? "OPEN" : "ERROR";
+    }
+};
