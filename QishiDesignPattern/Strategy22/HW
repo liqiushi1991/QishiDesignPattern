@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <complex>
+#include <tuple>
+using namespace std;
+
+struct DiscriminantStrategy
+{
+    virtual double calculate_discriminant(double a, double b, double c) = 0;
+};
+ 
+struct OrdinaryDiscriminantStrategy : DiscriminantStrategy
+{
+    // todo
+    double calculate_discriminant(double a, double b, double c) override
+    {
+        return b*b-4*a*c;
+    }
+};
+ 
+struct RealDiscriminantStrategy : DiscriminantStrategy
+{
+    // todo
+    double calculate_discriminant(double a, double b, double c) override
+    {
+        double ret = b*b-4*a*c;
+        return ret < 0 ? NAN : ret;
+    }
+};
+ 
+class QuadraticEquationSolver
+{
+    DiscriminantStrategy& strategy;
+public:
+    QuadraticEquationSolver(DiscriminantStrategy& strategy) : strategy(strategy) {}
+ 
+    tuple<complex<double>, complex<double>> solve(double a, double b, double c)
+    {
+        // todo
+        double discri = strategy.calculate_discriminant(a, b, c);
+        double x1_real = 0.f, x1_imag = 0.f;
+        double x2_real = 0.f, x2_imag = 0.f;
+        double denominator = 2 * a;
+        
+        x1_real = x2_real = isnan(discri) ? NAN : -(b / denominator);
+        x1_imag = sqrt(abs(discri)) / denominator;
+        x2_imag = -(x1_imag);
+        
+        if (discri > 0)
+            return make_tuple(complex<double>{x1_real + x1_imag, 0}, complex<double>{x2_real + x2_imag, 0});
+        else
+            return make_tuple(complex<double>{x1_real, x1_imag}, complex<double>{x2_real, x2_imag});
+    }
+};
